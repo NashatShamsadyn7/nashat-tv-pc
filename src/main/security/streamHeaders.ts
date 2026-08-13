@@ -5,25 +5,36 @@ const UA =
 
 const VLC_UA = 'VLC/3.0.18 LibVLC/3.0.18'
 
-// Hosts whose CDNs require a karwan.tv Referer to serve m3u8/ts segments.
-// Must stay an exact-host / true-subdomain list. The previous version matched
-// any hostname *containing* 'hls' or 'stream', which forged a karwan.tv Referer
+// Hosts whose CDNs hotlink-protect their streams: the manifest and every
+// segment are served only to a request carrying the broadcaster's own Referer.
+// Must stay an exact-host / true-subdomain list. An earlier version matched any
+// hostname *containing* 'hls' or 'stream', which forged a karwan.tv Referer
 // onto unrelated CDNs (akamaized.net, streamlock.net, wns.live, persiana.live…).
 // Sending a foreign Referer to those leaks the association and trips hotlink
-// protection, which rejects the segment request outright.
-const KARWAN_STREAM_HOSTS = ['karwan.tv']
+// protection, which rejects the segment request outright — so each host is
+// paired with the one Referer its own CDN whitelists.
+//
+// stream.kurdmax.tv accepts `https://kurdmax.tv` (and www) and nothing else:
+// no Referer, a VLC/ExoPlayer User-Agent, or an Origin header alone all 403.
+const REFERER_BY_HOST: Record<string, string> = {
+  'karwan.tv': 'https://karwan.tv/',
+  'stream.kurdmax.tv': 'https://kurdmax.tv/'
+}
 
 function isStreamSegment(url: string): boolean {
   return /\.(m3u8|ts|mpd|m4s|key)(\?|$)/i.test(url)
 }
 
-function shouldInjectKarwanReferer(url: string): boolean {
-  if (!isStreamSegment(url)) return false
+function refererFor(url: string): string | null {
+  if (!isStreamSegment(url)) return null
   try {
     const host = new URL(url).hostname.toLowerCase()
-    return KARWAN_STREAM_HOSTS.some((h) => host === h || host.endsWith('.' + h))
+    for (const [pattern, referer] of Object.entries(REFERER_BY_HOST)) {
+      if (host === pattern || host.endsWith('.' + pattern)) return referer
+    }
+    return null
   } catch {
-    return false
+    return null
   }
 }
 
@@ -48,13 +59,14 @@ export function installStreamHeaders(): void {
       return
     }
 
-    if (!shouldInjectKarwanReferer(details.url)) {
+    const referer = refererFor(details.url)
+    if (!referer) {
       callback({ requestHeaders: details.requestHeaders })
       return
     }
 
-    headers['Referer'] = 'https://karwan.tv/'
-    headers['Origin'] = 'https://karwan.tv'
+    headers['Referer'] = referer
+    headers['Origin'] = referer.replace(/\/$/, '')
     headers['User-Agent'] = UA
     callback({ requestHeaders: headers })
   })
