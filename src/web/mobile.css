@@ -1,0 +1,60 @@
+/* Phone layout for the web build. The desktop renderer always shows a fixed
+   240px sidebar; below 768px it becomes an off-canvas drawer opened by the
+   button that src/web/mobileNav.ts injects. */
+#web-nav-toggle {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  #web-nav-toggle {
+    display: grid;
+    place-items: center;
+    position: fixed;
+    bottom: 16px;
+    inset-inline-start: 16px;
+    z-index: 45;
+    width: 48px;
+    height: 48px;
+    border-radius: 9999px;
+    background: #e11d48;
+    color: #fff;
+    box-shadow: 0 6px 20px rgb(0 0 0 / 0.5);
+  }
+
+  aside.w-60 {
+    position: fixed;
+    inset-block: 0;
+    inset-inline-start: 0;
+    z-index: 44;
+    height: 100dvh;
+    background: #0b0b0b;
+    transform: translateX(-100%);
+    transition: transform 0.2s ease-out;
+  }
+  [dir='rtl'] aside.w-60 {
+    transform: translateX(100%);
+  }
+  html.web-nav-open aside.w-60 {
+    transform: none;
+  }
+  html.web-nav-open body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 43;
+    background: rgb(0 0 0 / 0.6);
+  }
+
+  /* Top bar: let the search field shrink instead of pushing controls off-screen. */
+  header {
+    padding-inline: 12px !important;
+    gap: 8px !important;
+  }
+  header > * {
+    min-width: 0;
+  }
+
+  main [class*='px-8'] {
+    padding-inline: 16px;
+  }
+}

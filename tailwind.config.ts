@@ -17,7 +17,7 @@ const themed = (name: string, fallback: string): string =>
   `rgb(var(${name}, ${fallback}) / <alpha-value>)`
 
 export default {
-  content: ['./src/renderer/index.html', './src/renderer/src/**/*.{ts,tsx}'],
+  content: ['./src/renderer/index.html', './src/renderer/src/**/*.{ts,tsx}', './src/web/**/*.{ts,tsx}'],
   darkMode: 'class',
   theme: {
     extend: {

@@ -12,6 +12,8 @@
   "scripts": {
     "dev": "node scripts/run.mjs dev",
     "build": "node scripts/run.mjs build",
+    "build:web": "vite build --config vite.web.config.ts",
+    "dev:web": "vite --config vite.web.config.ts",
     "start": "node scripts/run.mjs preview",
     "typecheck:node": "tsc --noEmit -p tsconfig.node.json",
     "typecheck:web": "tsc --noEmit -p tsconfig.web.json",
