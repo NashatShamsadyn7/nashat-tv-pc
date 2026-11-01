@@ -127,7 +127,16 @@ export default function Arabic() {
     return () => {
       cancelled = true
     }
-  }, [tab, origMovies, origTv, dubMovies, dubTv, dubbedMovieIds, dubbedTvIds])
+  }, [tab, origMovies, origTv, dubMovies, dubTv, dubbedMovieIds, dubbedTvIds, lang])
+
+  // Switching the UI language must refetch titles/overviews in that language;
+  // the cached lists above were fetched in the previous one.
+  useEffect(() => {
+    setOrigMovies(null)
+    setOrigTv(null)
+    setDubMovies(null)
+    setDubTv(null)
+  }, [lang])
 
   // When community votes change the dubbed id set, drop the cached lists so
   // the effect above refetches with the expanded ids. Votes are rare, so the

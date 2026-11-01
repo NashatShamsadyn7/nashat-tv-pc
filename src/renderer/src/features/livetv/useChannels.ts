@@ -9,18 +9,44 @@ export type ChannelsState = {
   error: string | null
 }
 
+// The first RTDB snapshot waits for the websocket handshake, which can take
+// several seconds. Showing the last list immediately keeps Live TV from sitting
+// on skeletons; the live subscription replaces it as soon as it arrives.
+const CACHE_KEY = 'nashat:live-channels:v1'
+
+function readCache(): Channel[] | null {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY)
+    const parsed = raw ? (JSON.parse(raw) as Channel[]) : null
+    return Array.isArray(parsed) && parsed.length ? parsed : null
+  } catch {
+    return null
+  }
+}
+
+function writeCache(channels: Channel[]): void {
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify(channels))
+  } catch {
+    /* storage full or unavailable — the live list still works */
+  }
+}
+
 /** Live subscription to /live_tv_channels in Firebase RTDB. */
 export function useChannels(): ChannelsState {
-  const [state, setState] = useState<ChannelsState>({
-    channels: [],
-    loading: true,
-    error: null
+  const [state, setState] = useState<ChannelsState>(() => {
+    const cached = readCache()
+    return { channels: cached ?? [], loading: !cached, error: null }
   })
 
   useEffect(() => {
     const unsub = subscribeChannels(
-      (channels) => setState({ channels, loading: false, error: null }),
-      (err) => setState({ channels: [], loading: false, error: err.message })
+      (channels) => {
+        setState({ channels, loading: false, error: null })
+        writeCache(channels)
+      },
+      // Keep showing the cached list if the subscription fails.
+      (err) => setState((prev) => ({ channels: prev.channels, loading: false, error: err.message }))
     )
     return () => unsub()
   }, [])

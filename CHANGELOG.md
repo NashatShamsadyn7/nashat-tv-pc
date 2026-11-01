@@ -2,6 +2,22 @@
 
 جميع التغييرات الملحوظة في هذا المشروع تُوثَّق في هذا الملف.
 
+## [1.5.5] - 2026-11-01
+
+### إصلاحات (Fixes)
+
+- **القنوات الميتة لم تعد تظهر:** القنوات المعلَّمة `isAlive: false` في قاعدة البيانات كانت تظهر في الشبكة وتفشل عند الضغط. صارت تُخفى.
+- **البث المباشر يظهر أسرع:** آخر قائمة قنوات تُحفظ محلياً وتظهر فوراً عند الفتح، ثم تُستبدل بالقائمة الحيّة من Firebase.
+- **صفحة المحتوى العربي** تعيد جلب العناوين عند تغيير لغة الواجهة بدل إبقاء اللغة السابقة.
+- **البحث في وضع الأطفال:** نتائج البحث تُفلتر من جديد عند التبديل إلى ملف أطفال.
+
+### Fixed (English)
+
+- Channels flagged `isAlive: false` are no longer listed (they only produced tiles that failed on click).
+- Live TV shows the last known channel list immediately while the RTDB subscription connects.
+- The Arabic page refetches titles when the UI language changes.
+- Search re-applies the kids filter when the active profile switches to a kids profile.
+
 ## [1.4.0] - 2026
 
 ### إصلاحات (Fixes)

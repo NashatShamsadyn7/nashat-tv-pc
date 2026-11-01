@@ -82,7 +82,7 @@ export default function SearchPage() {
     return () => {
       cancelled = true
     }
-  }, [debounced, lang])
+  }, [debounced, lang, kidsMode])
 
   const showHistory = !query.trim() && history.length > 0
 

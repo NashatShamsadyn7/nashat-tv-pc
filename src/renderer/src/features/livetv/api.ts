@@ -59,9 +59,11 @@ export function subscribeChannels(
         ? val.map((c, i) => [String(i), c])
         : Object.entries(val)
 
+      // isAlive === false marks a stream the channel checker found dead; showing
+      // it only produces a tile that fails on click.
       const channels = entries
         .map(([k, c]) => (isValidChannel(c) && !isExcluded(c) ? normalize(c, k) : null))
-        .filter((c): c is Channel => c !== null)
+        .filter((c): c is Channel => c !== null && c.isAlive !== false)
 
       onData(channels)
     },
