@@ -8,8 +8,9 @@ import type { TmdbInvokePayload } from '@shared/tmdb'
 
 declare const __APP_VERSION__: string
 
-// TMDB is reached through web-proxy/worker.js, which holds the bearer token.
-const TMDB_BASE = `${import.meta.env.VITE_TMDB_PROXY_URL as string}/3`
+// TMDB is reached through the `tmdb` Cloud Function (functions/index.js),
+// which holds the bearer token; Hosting rewrites /tmdb/** to it.
+const TMDB_BASE = `${location.origin}/tmdb`
 const TTL_MS = 5 * 60 * 1000
 const cache = new Map<string, { expiresAt: number; data: unknown }>()
 

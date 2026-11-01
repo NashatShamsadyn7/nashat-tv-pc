@@ -1,17 +1,13 @@
 import { resolve } from 'node:path'
-import { defineConfig, loadEnv } from 'vite'
+import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import pkg from './package.json'
 
 // Browser build of the renderer for Firebase Hosting (site nashat-tv-watch).
 // src/web/shim.ts stands in for the Electron preload bridge (TMDB goes through
-// the web-proxy Worker so no token ships in the bundle), and the embed-
+// the `tmdb` Cloud Function so no token ships in the bundle), and the embed-
 // server player is swapped for a trailer + where-to-watch sheet.
-export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), '')
-  if (mode === 'production' && !env.VITE_TMDB_PROXY_URL?.trim()) {
-    throw new Error('Refusing to build: VITE_TMDB_PROXY_URL (the web-proxy Worker URL) is missing from .env')
-  }
+export default defineConfig(() => {
   return {
     root: 'src/web',
     base: '/',
