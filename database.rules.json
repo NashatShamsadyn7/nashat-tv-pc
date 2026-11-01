@@ -2,42 +2,47 @@
   "rules": {
     ".read": false,
     ".write": false,
-
     "live_tv_channels": {
       ".read": true,
       ".write": false,
-      ".indexOn": ["category", "isAlive"]
+      ".indexOn": [
+        "category",
+        "isAlive"
+      ]
     },
-
     "channels": {
       ".read": true,
       ".write": false,
-      ".indexOn": ["category", "isAlive"]
+      ".indexOn": [
+        "category",
+        "isAlive"
+      ]
     },
-
     "categories": {
       ".read": true,
       ".write": false
     },
-
     "epg": {
       ".read": true,
       ".write": false,
       "$channelKey": {
-        ".indexOn": ["start", "end"]
+        ".indexOn": [
+          "start",
+          "end"
+        ]
       }
     },
-
     "trending_counters": {
       ".read": true,
       "$mediaId": {
         ".write": "auth != null && newData.isNumber() && newData.val() == (data.exists() ? data.val() : 0) + 1"
       }
     },
-
     "profiles": {
       ".read": "auth != null",
-      ".indexOn": ["username"],
+      ".indexOn": [
+        "username"
+      ],
       "$uid": {
         ".write": "auth != null && auth.uid === $uid",
         ".validate": "newData.hasChildren(['displayName'])",
@@ -52,7 +57,6 @@
         }
       }
     },
-
     "usernames": {
       ".read": "auth != null",
       "$username": {
@@ -60,7 +64,6 @@
         ".validate": "newData.isString() && $username.matches(/^[a-z0-9_]{3,20}$/)"
       }
     },
-
     "users": {
       "$uid": {
         ".read": "auth != null && auth.uid === $uid",
@@ -118,7 +121,6 @@
         }
       }
     },
-
     "dms": {
       "$chatId": {
         ".read": "auth != null && $chatId.contains(auth.uid)",
@@ -130,7 +132,6 @@
         }
       }
     },
-
     "dubVotes": {
       "$kind": {
         ".read": "auth != null",
@@ -143,11 +144,10 @@
         }
       }
     },
-
     "rooms": {
       "$roomId": {
         ".read": "auth != null",
-        ".write": "auth != null && (!data.exists() || data.child('ownerId').val() === auth.uid || newData.child('ownerId').val() === auth.uid)",
+        ".write": "auth != null && (data.exists() ? data.child('ownerId').val() === auth.uid : newData.child('ownerId').val() === auth.uid)",
         ".validate": "newData.hasChildren(['ownerId','createdAt'])",
         "members": {
           "$uid": {
@@ -181,6 +181,18 @@
           }
         }
       }
+    },
+    "live_tv": {
+      ".read": true,
+      ".write": false
+    },
+    "movies": {
+      ".read": true,
+      ".write": false
+    },
+    "series": {
+      ".read": true,
+      ".write": false
     }
   }
 }
