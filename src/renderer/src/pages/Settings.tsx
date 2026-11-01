@@ -66,14 +66,23 @@ function Row({
   )
 }
 
-function Toggle({ value, onChange }: { value: boolean; onChange: (v: boolean) => void }) {
+function Toggle({
+  value,
+  onChange,
+  disabled = false
+}: {
+  value: boolean
+  onChange: (v: boolean) => void
+  disabled?: boolean
+}) {
   return (
     <button
       onClick={() => onChange(!value)}
       role="switch"
       aria-checked={value}
+      disabled={disabled}
       className={cn(
-        'w-11 h-6 rounded-full relative transition-colors',
+        'w-11 h-6 rounded-full relative transition-colors disabled:opacity-40 disabled:cursor-not-allowed',
         value ? 'bg-brand-500' : 'bg-ink-600'
       )}
     >
@@ -189,9 +198,7 @@ export default function Settings() {
             label={t('settings.autoplayNext')}
             description={t('settings.autoplayNextUnavailable')}
           >
-            <div className="opacity-40 pointer-events-none" aria-disabled>
-              <Toggle value={false} onChange={() => {}} />
-            </div>
+            <Toggle value={false} onChange={() => {}} disabled />
           </Row>
           <Row label={t('settings.rememberPosition')}>
             <Toggle value={settings.rememberPosition} onChange={(v) => settings.set('rememberPosition', v)} />

@@ -2,6 +2,18 @@
 
 جميع التغييرات الملحوظة في هذا المشروع تُوثَّق في هذا الملف.
 
+## [1.5.6] - 2026-11-01
+
+### إصلاحات (Fixes)
+
+- **فتح التطبيق مرتين:** الضغط على الأيقونة والتطبيق مفتوح كان يفتح نسخة ثانية على منفذ مختلف — تظهر بلا تسجيل دخول، ولا تُحمَّل فيها القنوات لأن التخزين مقفل من النسخة الأولى. الآن تُعرض النافذة المفتوحة بدل ذلك.
+- مفتاح «التشغيل التلقائي للحلقة التالية» المعطَّل صار معطَّلاً فعلاً (لا يُركَّز عليه ولا يُعلَن كزر فعّال).
+
+### Fixed (English)
+
+- A second launch now focuses the running window instead of starting another instance on the next port (logged-out origin, locked IndexedDB, Live TV stuck loading).
+- The unavailable "autoplay next" switch is a real disabled control.
+
 ## [1.5.5] - 2026-11-01
 
 ### إصلاحات (Fixes)

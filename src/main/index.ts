@@ -107,7 +107,25 @@ function createMainWindow(): BrowserWindow {
   return win
 }
 
+// A second launch (double-clicking the shortcut while the app is open or sits
+// in the tray) would bind the next port candidate — a different origin, so the
+// user looks logged out — and find this profile's IndexedDB locked, which
+// stalls Firebase and leaves Live TV loading forever. Hand off to the running
+// window instead.
+const gotSingleInstanceLock = app.requestSingleInstanceLock()
+if (!gotSingleInstanceLock) {
+  app.quit()
+} else {
+  app.on('second-instance', () => {
+    if (!mainWin) return
+    if (mainWin.isMinimized()) mainWin.restore()
+    mainWin.show()
+    mainWin.focus()
+  })
+}
+
 app.whenReady().then(async () => {
+  if (!gotSingleInstanceLock) return
   app.setAppUserModelId('tv.nashat.pc')
   installAdblock()
   installFrameHeaderBypass()
